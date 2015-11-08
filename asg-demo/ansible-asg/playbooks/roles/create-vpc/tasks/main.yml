@@ -1,0 +1,30 @@
+- name: Create EC2 VPC
+  local_action:
+    module: ec2_vpc
+    state: present
+    cidr_block: 10.0.0.0/16
+    resource_tags: { "Name": "{{env.client}}.{{env.stage}}.vpc" }
+    subnets:
+      - cidr: 10.0.0.0/24
+        az: "{{amazon.region}}a"
+        resource_tags:
+           Role: "public"
+           Client: "{{env.client}}"
+           Stage: "{{env.stage}}"
+           Name: "{{env.client}}.{{env.stage}}.subnet.public.{{amazon.region}}a"
+    internet_gateway: True
+    route_tables:
+      - subnets:
+          - 10.0.0.0/24
+        routes:
+          - dest: 0.0.0.0/0
+            gw: igw
+        resource_tags: { "Name" : "{{env.client}}.{{env.stage}}.routetable" }
+    region: "{{amazon.region}}"
+  register: vpc
+
+- name: Created VPC id
+  debug: var=vpc.vpc_id
+
+- name: Created public subnet id
+  debug: var=vpc.subnets[0].id

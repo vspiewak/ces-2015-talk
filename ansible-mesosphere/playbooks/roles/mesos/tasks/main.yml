@@ -1,0 +1,37 @@
+# Mesos role (common to master/slave)
+
+- name: Install APT Key for Mesosphere repository
+  apt_key:
+    keyserver=hkp://keyserver.ubuntu.com:80
+    id=E56151BF
+    state=present
+
+- name: Install APT Mesosphere repository
+  apt_repository:
+    repo="deb http://repos.mesosphere.io/{{ ansible_distribution|lower }} {{ ansible_lsb.codename }} main"
+    state=present
+
+- name: Install Mesos package
+  apt:
+    pkg="mesos={{version.mesos}}"
+    state=present
+    update_cache=yes
+
+- name: Disable zookeeper service
+  service:
+    name=zookeeper
+    enabled=no
+    state=stopped
+
+- name: Configure mesos
+  template:
+    src=value_file.j2
+    dest="/etc/mesos/{{ item.key }}"
+    owner=root
+    group=root
+    mode=0644
+  with_items:
+    - { key: "zk", value: "{{zookeeper.mesos}}" }
+    - { key: "ip", value: "{{ hostvars[inventory_hostname].ec2_private_ip_address }}" }
+    - { key: "logs", value: "/var/log/mesos" }
+    - { key: "ulimit", value: "-n 8192" }

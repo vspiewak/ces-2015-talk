@@ -1,0 +1,1 @@
+keypair: "{{ lookup('env','PEM_NAME') }}"

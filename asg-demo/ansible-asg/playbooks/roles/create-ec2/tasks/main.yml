@@ -1,0 +1,48 @@
+# Create EC2 instances
+
+- name: Create EC2 security group rules in public subnet
+  local_action:
+    module: ec2_group
+    vpc_id: "{{amazon.vpc.id}}"
+    name: "{{amazon.vpc.id}}_{{env.client}}_{{env.stage}}_{{item.key}}_sg"
+    description: "{{amazon.vpc.id}}_{{env.client}}_{{env.stage}}_{{item.key}} security group rules"
+  with_dict: public_instances
+  tags: security
+
+- name: Apply EC2 security group rules in public subnet
+  local_action:
+    module: ec2_group
+    vpc_id: "{{amazon.vpc.id}}"
+    name: "{{amazon.vpc.id}}_{{env.client}}_{{env.stage}}_{{item.key}}_sg"
+    description: "{{amazon.vpc.id}}_{{env.client}}_{{env.stage}}_{{item.key}} security group rules"
+    rules: "{{item.value.security_group.rules}}"
+    rules_egress: "{{item.value.security_group.rules_egress}}"
+  with_dict: public_instances
+  tags: security
+
+- name: Create EC2 instances in public subnet
+  local_action:
+    module: ec2
+    assign_public_ip: yes
+    vpc_subnet_id: "{{amazon.vpc.subnet}}"
+    key_name: "{{keypair}}"
+    instance_type: "{{item.value.type}}"
+    group: "{{amazon.vpc.id}}_{{env.client}}_{{env.stage}}_{{item.key}}_sg"
+    instance_tags:
+      SubnetType: public
+      Client: "{{env.client}}"
+      Stage: "{{env.stage}}"
+      ClientStage: "{{env.client}}.{{env.stage}}"
+      Name: "{{env.client}}.{{env.stage}}.{{item.key}}"
+      Role: "{{item.value.role}}"
+      ClusterRole: "{{item.key}}"
+      CompleteDesignation: "{{env.client}}_{{env.stage}}_{{item.key}}"
+    image: "{{item.value.ami}}"
+    wait: yes
+    exact_count: "{{item.value.count}}"
+    count_tag :
+       Client: "{{env.client}}"
+       ClusterRole: "{{item.key}}"
+       Stage: "{{env.stage}}"
+  register: "ec2result"
+  with_dict: public_instances

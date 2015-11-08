@@ -1,0 +1,33 @@
+# Mesos master role
+
+- name: Configure mesos-master
+  template:
+    src=value_file.j2
+    dest="/etc/mesos-master/{{ item.key }}"
+    owner=root
+    group=root
+    mode=0644
+  with_items:
+    - { key: "cluster", value: "{{ mesos.cluster }}" }
+    - { key: "quorum", value: "{{mesos.quorum}}" }
+    - { key: "work_dir", value: "{{mesos.work_dir}}" }
+  notify: Restart mesos-master
+
+- name: Configure mesos-master hostname
+  copy: src=init-mesos-hostname dest=/etc/network/if-up.d/init-mesos-hostname mode=0755
+
+- name: Execute init-mesos-hostname
+  shell: /etc/network/if-up.d/init-mesos-hostname
+
+- name: Disable mesos-slave service
+  service:
+    name=mesos-slave
+    enabled=no
+    state=stopped
+
+- name: Enable mesos-master service
+  service:
+    name=mesos-master
+    enabled=yes
+    state=started
+  tags: service

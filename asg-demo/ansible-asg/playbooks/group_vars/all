@@ -1,0 +1,28 @@
+env:
+  client: "{{ lookup('env','CLIENT') }}"
+  stage: "{{ lookup('env','STAGE') }}"
+
+ami:
+  debian: ami-61e56916
+  es_image: "{{ lookup('env','AMI_ID') }}"
+
+amazon:
+  region: eu-west-1
+  vpc:
+    id: "{{ lookup('env','VPC_ID') }}"
+    subnet: "{{ lookup('env','SUBNET_ID') }}"
+
+public_instances:
+  elasticsearch_node:
+    ami: "{{ ami.debian }}"
+    type: t2.micro
+    count: 1
+    role: elasticsearch
+    security_group:
+      rules:
+        - { proto: tcp, from_port: 22, to_port: 22, cidr_ip: 0.0.0.0/0 }
+        - { proto: tcp, from_port: 443, to_port: 443, cidr_ip: 0.0.0.0/0 }
+        - { proto: tcp, from_port: 9200, to_port: 9200, cidr_ip: 0.0.0.0/0 }
+        - { proto: tcp, from_port: 9300, to_port: 9300, cidr_ip: 0.0.0.0/0 }
+      rules_egress:
+        - { proto: all , cidr_ip: "0.0.0.0/0", from_port: all, to_port: all }

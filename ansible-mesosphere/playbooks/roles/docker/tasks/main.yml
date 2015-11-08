@@ -1,0 +1,24 @@
+# Docker role
+
+- name: Add debian jessie-backports repository
+  apt_repository:
+    repo="deb http://http.debian.net/debian jessie-backports main"
+    state=present
+  tags: install
+
+- name: Update APT
+  apt: update_cache=yes
+  tags: install
+
+- name: Install docker
+  apt:
+    pkg=docker.io
+    state=present
+  tags: install
+
+- name: Enable Docker service
+  service:
+    name=docker
+    enabled=yes
+    state=started
+  tags: service

@@ -1,0 +1,32 @@
+# Mesos slave role
+
+- name: Configure mesos-slave
+  template:
+    src=value_file.j2
+    dest="/etc/mesos-slave/{{ item.key }}"
+    owner=root
+    group=root
+    mode=0644
+  with_items:
+    - { key: "containerizers", value: "docker,mesos" }
+    - { key: "executor_registration_timeout", value: "5mins" }
+  notify: Clean and restart mesos-slave
+
+- name: Configure mesos-slave hostname
+  copy: src=init-mesos-hostname dest=/etc/network/if-up.d/init-mesos-hostname mode=0755
+
+- name: Execute init-mesos-hostname
+  shell: /etc/network/if-up.d/init-mesos-hostname
+
+- name: Disable mesos-master service
+  service:
+    name=mesos-master
+    enabled=no
+    state=stopped
+
+- name: Enable mesos-slave service
+  service:
+    name=mesos-slave
+    enabled=yes
+    state=started
+  tags: service

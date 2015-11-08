@@ -1,0 +1,7 @@
+---
+# file: site.yml
+
+- include: zookeeper.yml
+- include: mesos.yml
+- include: marathon.yml
+- include: sensu.yml

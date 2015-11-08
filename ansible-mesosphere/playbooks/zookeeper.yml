@@ -1,0 +1,10 @@
+# playbook for zookeeper
+
+- hosts: "{{lookup('env','CLIENT')}}_{{lookup('env','ENV')}}_zookeeper"
+  user: admin
+  sudo: yes
+
+  roles:
+    - all
+    - java
+    - zookeeper

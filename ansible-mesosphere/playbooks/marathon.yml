@@ -1,0 +1,11 @@
+# playbook for Mesos master
+
+- hosts: "{{lookup('env','CLIENT')}}_{{lookup('env','ENV')}}_marathon"
+  user: admin
+  sudo: yes
+
+  roles:
+    - all
+    - java
+    - mesos # needed for libmesos.dylib
+    - marathon

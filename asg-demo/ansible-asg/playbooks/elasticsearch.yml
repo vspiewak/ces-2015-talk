@@ -1,0 +1,10 @@
+# playbook for elasticsearch
+
+- hosts: "{{ lookup('env','CLIENT') }}_{{ lookup('env','STAGE') }}_elasticsearch_node"
+  user: admin
+  sudo: yes
+
+  roles:
+    - common
+    - java
+    - elasticsearch

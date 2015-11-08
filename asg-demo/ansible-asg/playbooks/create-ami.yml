@@ -1,0 +1,8 @@
+# playbook for elasticsearch ami
+
+- hosts: "{{ lookup('env','CLIENT') }}_{{ lookup('env','STAGE') }}_elasticsearch_node"
+  connection: local
+  gather_facts: true
+
+  roles:
+    - create-ami

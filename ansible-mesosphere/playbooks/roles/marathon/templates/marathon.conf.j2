@@ -1,0 +1,2 @@
+[program:marathon]
+command=/usr/bin/marathon --master {{zookeeper.mesos}} --zk {{zookeeper.marathon}} --event_subscriber http_callback

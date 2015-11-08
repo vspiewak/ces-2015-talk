@@ -1,0 +1,18 @@
+elasticsearch:
+  version: 1.7
+  clustername: elasticsearch-cluster
+  nodename: node-master-{{ hostvars[inventory_hostname]['ec2_id'] }}
+  quorom: 1
+  number_of_replicas: 2
+  plugins:
+    - cloud-aws
+    - bigdesk
+    - head
+    - hq
+    - kopf
+    - paramedic
+
+es_discovery:
+  aws_region: "{{ lookup('env','ES_DISCOVERY_AWS_REGION') }}"
+  aws_key: "{{ lookup('env','ES_DISCOVERY_AWS_ACCESS_KEY') }}"
+  aws_secret: "{{ lookup('env','ES_DISCOVERY_AWS_SECRET_KEY') }}"

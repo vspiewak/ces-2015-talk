@@ -1,0 +1,11 @@
+# playbook for Mesos master
+
+- hosts: "{{lookup('env','CLIENT')}}_{{lookup('env','ENV')}}_mesos_master"
+  user: admin
+  sudo: yes
+
+  roles:
+    - all
+    - java
+    - mesos
+    - mesos-master

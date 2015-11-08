@@ -1,0 +1,8 @@
+# playbook for ec2 autoscaling group
+
+- hosts: "local"
+  connection: local
+  gather_facts: true
+
+  roles:
+    - create-asg
