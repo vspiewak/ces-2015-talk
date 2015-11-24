@@ -9,7 +9,7 @@ FROM ubuntu:latest
 MAINTAINER vspiewak@thefamounsgooglemailerifyouknowwhatimean.com
 
 # Update the base image
-RUN apt-get update 
+RUN apt-get update
 
 # Install nginx
 RUN apt-get install -qq nginx
@@ -23,11 +23,11 @@ RUN apt-get install -qq psmisc
 # Add the base configuration file for Supervisord
 #ADD supervisor.conf /etc/supervisor.conf
 
-# Will run supervisord not as daemon 
+# Will run supervisord not as daemon
 RUN sed -i 's/^\(\[supervisord\]\)$/\1\nnodaemon=true/' /etc/supervisor/supervisord.conf
 
 RUN echo '[program:nginx]' > /etc/supervisor/conf.d/nginx.conf
-RUN echo 'command=/usr/sbin/nginx' >> /etc/supervisor/conf.d/nginx.conf
+RUN echo 'command=/usr/sbin/nginx -g "daemon off;"' >> /etc/supervisor/conf.d/nginx.conf
 
 EXPOSE 80
 
