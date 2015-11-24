@@ -28,6 +28,7 @@ RUN sed -i 's/^\(\[supervisord\]\)$/\1\nnodaemon=true/' /etc/supervisor/supervis
 
 RUN echo '[program:nginx]' > /etc/supervisor/conf.d/nginx.conf
 RUN echo 'command=/usr/sbin/nginx -g "daemon off;"' >> /etc/supervisor/conf.d/nginx.conf
+RUN echo 'autorestart=true' >> /etc/supervisor/conf.d/nginx.conf
 
 EXPOSE 80
 
