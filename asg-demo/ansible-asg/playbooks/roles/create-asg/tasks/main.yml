@@ -16,10 +16,10 @@
         ping_protocol: http
         ping_port: 9200
         ping_path: "/"
-        response_timeout: 5
-        interval: 30
+        response_timeout: 2
+        interval: 5
         unhealthy_threshold: 2
-        healthy_threshold: 10
+        healthy_threshold: 2
 
 - name: Create EC2 Launch configuration
   local_action:

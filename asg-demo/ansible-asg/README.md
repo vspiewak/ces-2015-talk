@@ -100,6 +100,25 @@ Configure EC2 ELB + LC + ASG
     ansible-playbook -i inventory/ec2.py playbooks/create-asg.yml
 
 
-For demo, configure ASG with the following values:
+Demo
+----
+
+For demo, configure the following:
+
+ELB with:
+
+* Timeout: 2
+* Interval: 5
+* (Un)healthy Threshold: 2
+
+Autoscaling Group with:
+
 * Default Cooldown: 5
 * Health Check Grace Period: 0
+
+
+
+    export ELB=http://<elb_cname>:9200
+    curl $ELB/comics/hero -d '{ "name" : "Batman" }'
+    curl -X PUT $ELB/comics/_settings -d '{ "number_of_replicas": 2 }'
+
